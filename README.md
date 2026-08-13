@@ -1,1 +1,1 @@
-# FinlayRhodes.github.io
+# FinlayRhodes ~ Portfolio Git Pages
