@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal Shader | Finlay-Jay</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlight.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Real-Time Fractal Shader</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <button id="theme-toggle">🌙</button>
+        </nav>
+    </header>
+
+    <section class="project">
+
+        <h2>Overview</h2>
+        <p>
+            This project implements a real-time fractal renderer using a custom shader.
+            The shader generates complex fractal patterns (such as Mandelbrot or Julia sets)
+            entirely on the GPU, allowing smooth zooming, colour cycling, and parameter
+            animation. The result is a visually rich, mathematically driven effect suitable
+            for games, visualisers, or interactive art tools.
+        </p>
+
+        <h2>Demo</h2>
+        <p>You can view or play the project using the links below:</p>
+
+        <!-- Replace the src with your actual YouTube URL -->
+        <div class="embed-container">
+            <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                    title="Fractal Shader Demo"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+        
+        <h2>Technical Breakdown</h2>
+        <p>
+            This shader renders a 3D fractal using ray marching over a signed distance field. Each
+            pixel casts a ray into the scene, advancing based on the SDF’s distance estimate until
+            it intersects the fractal. The fractal is formed by iterative transformations applied
+            to a 3D point, with parameters like scale and rotation driving the final structure.
+            Surface normals are derived from the SDF gradient for simple lighting and colour
+            effects.
+        </p>
+
+        <section class="project-code">
+
+            <h2>Mandelbulb Distance Estimator (DE)</h2>
+            <p>The core mathematical function that defines the 3D fractal structure.</p>
+
+            <pre><code class="language-glsl">
+float mandelbulbDE(vec3 p, out float smoothIter)
+{
+    vec3 z = p;
+    float dr = 1.0;
+    float r = 0.0;
+
+    const int iter = 12;
+    const float power = 8.0;
+
+    for(int i = 0; i < iter; i++) {
+        r = length(z);
+        if(r > 2.6) break;
+
+        float theta = acos(z.z / r);
+        float phi = atan(z.y, z.x);
+
+        dr = pow(r, power - 1.0) * power * dr + 1.0;
+
+        float zr = pow(r, power);
+        theta *= power;
+        phi *= power;
+
+        z = zr * vec3(
+            sin(theta) * cos(phi),
+            sin(theta) * sin(phi),
+            cos(theta)
+        ) + p;
+    }
+
+    smoothIter = float(i) - log(log(r)) / log(power);
+    return 0.5 * log(r) * r / dr;
+}
+    </code></pre>
+
+
+            <h2>Ray‑Marching Loop</h2>
+            <p>Sphere‑tracing the fractal using the distance estimator to safely advance the ray.</p>
+
+            <pre><code class="language-glsl">
+float shortestDistance(vec3 eye, vec3 ray, float start, float end)
+{
+    float depth = start;
+
+    for (int i = 0; i < MAX_MARCHING_STEPS; i++)
+    {
+        float h;
+        float dist = mandelbulbDE(eye + depth * ray, h);
+
+        if (dist < EPSILON)
+            return depth;
+
+        depth += dist;
+
+        if (depth > end)
+            return end;
+    }
+
+    return end;
+}
+    </code></pre>
+
+
+            <h2>SDF Normal Estimation</h2>
+            <p>Approximating the surface normal using gradient sampling.</p>
+
+            <pre><code class="language-glsl">
+vec3 estimateNormal(vec3 p)
+{
+    float h;
+
+    return normalize(vec3(
+        mandelbulbDE(vec3(p.x + EPSILON, p.y, p.z), h) -
+        mandelbulbDE(vec3(p.x - EPSILON, p.y, p.z), h),
+
+        mandelbulbDE(vec3(p.x, p.y + EPSILON, p.z), h) -
+        mandelbulbDE(vec3(p.x, p.y - EPSILON, p.z), h),
+
+        mandelbulbDE(vec3(p.x, p.y, p.z + EPSILON), h) -
+        mandelbulbDE(vec3(p.x, p.y, p.z - EPSILON), h)
+    ));
+}
+    </code></pre>
+
+        </section>
+
+        <h2>Features</h2>
+        <ul>
+            <li>Real-time fractal generation entirely on the GPU.</li>
+            <li>Smooth zooming and camera movement.</li>
+            <li>Animated colour palettes driven by time.</li>
+            <li>Parameter controls for iteration count, offset, and zoom.</li>
+        </ul>
+
+        <h2>Challenges & Solutions</h2>
+        <ul>
+            <li>Precision issues at high zoom levels → improved stability using double-precision emulation.</li>
+            <li>Performance drops with high iteration counts → added dynamic iteration scaling.</li>
+            <li>Colour banding → solved with smoothstep blending and palette interpolation.</li>
+        </ul>
+
+        <h2>Reflection</h2>
+        <p>
+            This shader opened the door to more advanced GPU-driven mathematical rendering.
+            Future work could include 3D fractals, ray-marched fractal volumes, or interactive
+            parameter editing tools for real-time exploration.
+        </p>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Finlay Rhodes</p>
+    </footer>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vulkan Pixelation Compute Shader | Finlay Jay Rhodes</title>
+    <title>Fractal Shader | Finlay-Jay</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="highlight.css">
     <script src="script.js" defer></script>
@@ -11,7 +11,7 @@
 
 <body>
     <header>
-        <h1>Vulkan Pixelation Compute Shader</h1>
+        <h1>Real-Time Fractal Shader</h1>
         <nav>
             <a href="index.html">Home</a>
             <a href="projects.html">Projects</a>
@@ -23,10 +23,10 @@
 
         <h2>Overview</h2>
         <p>
-            This project implements a real-time pixelation effect using Vulkan compute
-            shaders. The effect is applied to a rendered image by sampling and writing
-            back to a storage image, with correct synchronisation between compute and
-            graphics pipelines.
+            This project implements a real-time fractal renderer using a custom shader.
+            The shader generates complex fractal patterns (such as Mandelbrot or Julia sets)
+            entirely on the GPU, allowing smooth zooming, colour cycling, and parameter
+            animation.
         </p>
 
         <h2>Demo</h2>
@@ -35,67 +35,82 @@
         <!-- Replace the src with your actual YouTube URL -->
         <div class="embed-container">
             <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-                    title="Vulkan Pixelation Compute Shader Demo"
+                    title="Fractal Shader Demo"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
             </iframe>
         </div>
 
-        <!-- Replace with your actual itch.io URL if you upload a build -->
+        <!-- Replace with your actual itch.io URL -->
         <p>
-            <a href="https://your-itch-username.itch.io/your-vulkan-project" target="_blank">
-                Download / Play build on itch.io
+            <a href="https://your-itch-username.itch.io/your-fractal-shader" target="_blank">
+                Play on itch.io
             </a>
         </p>
 
         <h2>Technical Breakdown</h2>
         <p>
-            The pixelation effect is driven by a compute shader that operates on a
-            storage image. A pixel size parameter controls how aggressively the image
-            is downsampled visually, and is animated over time via push constants or
-            uniform updates in the main loop.
+            The fractal shader computes each pixel by iterating a complex function until
+            divergence. The number of iterations determines the colour, producing the
+            characteristic fractal patterns. Parameters such as zoom level, iteration count,
+            and colour palette are animated over time to create dynamic visual effects.
         </p>
 
         <pre><code class="language-glsl">
-// Fragment of a compute shader for pixelation
-layout(local_size_x = 8, local_size_y = 8) in;
+// Example fragment shader snippet for fractal rendering
+uniform float time;
+uniform vec2 resolution;
+uniform float zoom;
+uniform vec2 offset;
 
-layout(binding = 0, rgba8) uniform readonly image2D inputImage;
-layout(binding = 1, rgba8) uniform writeonly image2D outputImage;
-
-layout(push_constant) uniform PushConstants {
-    float pixelSize;
-} pc;
+vec3 palette(float t) {
+    return vec3(0.5 + 0.5 * cos(6.283 * (t + vec3(0.0, 0.33, 0.67))));
+}
 
 void main() {
-    ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 base = ivec2(coord / int(pc.pixelSize)) * int(pc.pixelSize);
-    vec4 color = imageLoad(inputImage, base);
-    imageStore(outputImage, coord, color);
+    vec2 uv = (gl_FragCoord.xy / resolution - 0.5) * zoom + offset;
+
+    vec2 z = uv;
+    int iterations = 0;
+    const int maxIterations = 200;
+
+    while (iterations < maxIterations && dot(z, z) < 4.0) {
+        z = vec2(
+            z.x * z.x - z.y * z.y + uv.x,
+            2.0 * z.x * z.y + uv.y
+        );
+        iterations++;
+    }
+
+    float t = float(iterations) / float(maxIterations);
+    gl_FragColor = vec4(palette(t), 1.0);
 }
         </code></pre>
 
-        <h2>Synchronisation & Layouts</h2>
-        <p>
-            The project focuses on correct image layout transitions and pipeline barriers
-            between compute and graphics queues. The rendered image is transitioned to a
-            layout suitable for compute access, processed, then transitioned back for
-            presentation in the graphics pipeline.
-        </p>
+        <h2>Features</h2>
+        <ul>
+            <li>Real-time fractal generation entirely on the GPU.</li>
+            <li>Smooth zooming and camera movement.</li>
+            <li>Animated colour palettes driven by time.</li>
+            <li>Parameter controls for iteration count, offset, and zoom.</li>
+        </ul>
 
         <h2>Challenges & Solutions</h2>
         <ul>
-            <li>Validation errors due to incorrect image layouts → resolved with explicit layout transitions.</li>
-            <li>Race conditions between compute and graphics → fixed using appropriate pipeline barriers.</li>
-            <li>Performance tuning of workgroup sizes → adjusted to balance GPU utilisation and overhead.</li>
+            <li>Precision issues at high zoom levels → improved stability using double-precision emulation.</li>
+            <li>Performance drops with high iteration counts → added dynamic iteration scaling.</li>
+            <li>Colour banding → solved with smoothstep blending and palette interpolation.</li>
         </ul>
 
         <h2>Reflection</h2>
         <p>
-            Future work could extend the effect into a full post-processing stack, add
-            user-controlled parameters, and integrate more advanced temporal behaviour
-            such as animated transitions or blending with other visual effects.
+            Building a 3D fractal with ray‑marched SDFs taught me a lot about precision, step
+            sizing, and performance in real‑time rendering. Managing deep zoom levels and complex
+            distance fields pushed me to refine my ray‑march loop and optimise iteration limits to
+            avoid artefacts. It was a solid introduction to more advanced procedural graphics, and
+            sets the foundation for future work like better lighting, shadows, and more complex SDF
+            compositions.
         </p>
 
     </section>
