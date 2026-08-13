@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finlay-Jay | Game Programmer Portfolio</title>
+    <title>Finlay Jay Rhodes | Game Programmer Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlight.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
     <header>
-        <h1>Finlay-Jay</h1>
+        <h1>Finlay Rhodes</h1>
         <p>Game Programmer • Graphics • Gameplay Systems • Technical Design</p>
 
         <nav>
             <a href="index.html">Home</a>
             <a href="projects.html">Projects</a>
-            <a href="mailto:your-email@example.com">Contact</a>
+            <button id="theme-toggle">🌙</button>
         </nav>
     </header>
 
@@ -23,4 +25,31 @@
         <h2>Welcome</h2>
         <p>
             I'm a game programmer specialising in gameplay systems, graphics programming,
-            Vulkan, and educational game design. This portfolio showcases my master's work
+            Vulkan, compute shaders, and educational game design. This portfolio showcases
+            my master's work, technical projects, and research.
+        </p>
+    </section>
+
+    <section class="featured">
+        <h2>Featured Work</h2>
+
+        <div class="card">
+            <img src="assets/images/nonogram.png" alt="Nonogram Project">
+            <h3>Gamified Python Learning System</h3>
+            <p>A Nonogram/Picross-based educational game with embedded Python tasks.</p>
+            <a href="project-template.html">View Project</a>
+        </div>
+
+        <div class="card">
+            <img src="assets/images/vulkan.png" alt="Vulkan Shader">
+            <h3>Vulkan Pixelation Compute Shader</h3>
+            <p>Real-time pixelation effect using compute/graphics synchronisation.</p>
+            <a href="project-template.html">View Project</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Finlay Rhodes</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project | Finlay-Jay</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlight.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Project Title</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <button id="theme-toggle">🌙</button>
+        </nav>
+    </header>
+
+    <section class="project">
+
+        <h2>Overview</h2>
+        <p>
+            Short description of the project, goals, and context.
+        </p>
+
+        <h2>Demo</h2>
+        <video controls width="600">
+            <source src="assets/videos/demo.mp4" type="video/mp4">
+        </video>
+
+        <h2>Technical Breakdown</h2>
+        <p>Explain your architecture, algorithms, and design decisions.</p>
+
+        <pre><code class="language-cpp">
+// Example code snippet
+void UpdatePixelation(float deltaTime) {
+    pixelSize += deltaTime * 0.5f;
+}
+        </code></pre>
+
+        <h2>Challenges & Solutions</h2>
+        <ul>
+            <li>Pipeline barrier sync issues → solved with correct layout transitions</li>
+            <li>Performance bottleneck → optimised workgroup sizes</li>
+        </ul>
+
+        <h2>Links</h2>
+        <a href="https://github.com/yourusername/yourrepo">GitHub Repo</a>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Finlay-Jay</p>
+    </footer>
+</body>
+</html>
