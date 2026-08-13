@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulkan Pixelation Compute Shader | Finlay Jay Rhodes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlight.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Vulkan Pixelation Compute Shader</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <button id="theme-toggle">🌙</button>
+        </nav>
+    </header>
+
+    <section class="project">
+
+        <h2>Overview</h2>
+        <p>
+            This project implements a real-time pixelation effect using Vulkan compute
+            shaders. The effect is applied to a rendered image by sampling and writing
+            back to a storage image, with correct synchronisation between compute and
+            graphics pipelines.
+        </p>
+
+        <h2>Demo</h2>
+        <p>You can view or play the project using the links below:</p>
+
+        <!-- Replace the src with your actual YouTube URL -->
+        <div class="embed-container">
+            <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                    title="Vulkan Pixelation Compute Shader Demo"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- Replace with your actual itch.io URL if you upload a build -->
+        <p>
+            <a href="https://your-itch-username.itch.io/your-vulkan-project" target="_blank">
+                Download / Play build on itch.io
+            </a>
+        </p>
+
+        <h2>Technical Breakdown</h2>
+        <p>
+            The pixelation effect is driven by a compute shader that operates on a
+            storage image. A pixel size parameter controls how aggressively the image
+            is downsampled visually, and is animated over time via push constants or
+            uniform updates in the main loop.
+        </p>
+
+        <pre><code class="language-glsl">
+// Fragment of a compute shader for pixelation
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(binding = 0, rgba8) uniform readonly image2D inputImage;
+layout(binding = 1, rgba8) uniform writeonly image2D outputImage;
+
+layout(push_constant) uniform PushConstants {
+    float pixelSize;
+} pc;
+
+void main() {
+    ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 base = ivec2(coord / int(pc.pixelSize)) * int(pc.pixelSize);
+    vec4 color = imageLoad(inputImage, base);
+    imageStore(outputImage, coord, color);
+}
+        </code></pre>
+
+        <h2>Synchronisation & Layouts</h2>
+        <p>
+            The project focuses on correct image layout transitions and pipeline barriers
+            between compute and graphics queues. The rendered image is transitioned to a
+            layout suitable for compute access, processed, then transitioned back for
+            presentation in the graphics pipeline.
+        </p>
+
+        <h2>Challenges & Solutions</h2>
+        <ul>
+            <li>Validation errors due to incorrect image layouts → resolved with explicit layout transitions.</li>
+            <li>Race conditions between compute and graphics → fixed using appropriate pipeline barriers.</li>
+            <li>Performance tuning of workgroup sizes → adjusted to balance GPU utilisation and overhead.</li>
+        </ul>
+
+        <h2>Reflection</h2>
+        <p>
+            Future work could extend the effect into a full post-processing stack, add
+            user-controlled parameters, and integrate more advanced temporal behaviour
+            such as animated transitions or blending with other visual effects.
+        </p>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Finlay Rhodes</p>
+    </footer>
+</body>
+</html>

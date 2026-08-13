@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamified Python Learning System | Finlay Jay Rhodes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="highlight.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Gamified Python Learning System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <button id="theme-toggle">🌙</button>
+        </nav>
+    </header>
+
+    <section class="project">
+
+        <h2>Overview</h2>
+        <p>
+            This project is a Nonogram/Picross-based educational game designed to support
+            higher education programming students learning Python. Players solve picture
+            logic puzzles where each completed grid reveals and unlocks embedded Python
+            tasks, integrating game-based progression with core programming concepts.
+        </p>
+
+        <h2>Demo</h2>
+        <div class="embed-container">
+            <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                    title="Gamified Python Learning System Demo"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+        <p>
+            <a href="https://your-itch-username.itch.io/your-nonogram-project" target="_blank">
+                Play on itch.io
+            </a>
+        </p>
+
+        <h2>Design Goals</h2>
+        <ul>
+            <li>Combine familiar puzzle mechanics (Nonogram/Picross) with Python exercises.</li>
+            <li>Encourage repeated engagement and practice through game progression.</li>
+            <li>Support knowledge retention by embedding tasks directly into the puzzle flow.</li>
+        </ul>
+
+        <h2>Technical Overview</h2>
+        <p>
+            The system manages puzzle states, Python task unlocking, and progression tracking.
+            Each puzzle is defined by a grid specification and associated learning objectives.
+            When a puzzle is solved, the game surfaces a Python task, which can be completed
+            within the same flow or via an external environment.
+        </p>
+
+        <pre><code class="language-python">
+# Example: simple validation for a Python task
+def is_solution_correct(user_output: str, expected_output: str) -> bool:
+    return user_output.strip() == expected_output.strip()
+        </code></pre>
+
+        <h2>Educational Focus</h2>
+        <p>
+            The project was evaluated as part of a university dissertation, comparing
+            game-based materials to traditional written resources for Python learning.
+            Metrics included engagement, perceived difficulty, and short-term retention.
+        </p>
+
+        <h2>Reflection</h2>
+        <p>
+            Future iterations could expand the task library, add adaptive difficulty based
+            on player performance, and integrate in-game feedback for Python solutions.
+        </p>
+
+    </section>
+
+    <footer>
+        <p>© 2026 Finlay Rhodes</p>
+    </footer>
+</body>
+</html>
